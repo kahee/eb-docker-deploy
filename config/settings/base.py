@@ -20,15 +20,14 @@ import sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ROOT_DIR = os.path.dirname(BASE_DIR)
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
-# static
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '.media')
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(ROOT_DIR, '.static')
-# media
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
-
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
+# static
 STATICFILES_DIRS = [
     STATIC_DIR,
 ]
@@ -38,6 +37,7 @@ SECRET_DIR = os.path.join(ROOT_DIR, '.secrets')
 SECRET_BASE = os.path.join(SECRET_DIR, 'base.json')
 SECRET_LOCAL = os.path.join(SECRET_DIR, 'local.json')
 SECRET_DEV = os.path.join(SECRET_DIR, 'dev.json')
+SECRET_PRODUCTION = os.path.join(SECRET_DIR, 'production.json')
 secrets = json.loads(open(SECRET_BASE, 'rt').read())
 
 
@@ -110,7 +110,6 @@ def set_config(obj, module_name=None, start=False):
 # raven모듈을 importlib를 사용해 가져온 후 현재 모듈에 'raven'이라는 이름으로 할당
 setattr(sys.modules[__name__], 'raven', importlib.import_module('raven'))
 set_config(secrets, module_name=__name__, start=True)
-print(getattr(sys.modules[__name__], 'RAVEN_CONFIG'))
 
 AUTH_USER_MODEL = 'members.User'
 
@@ -143,7 +142,9 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            TEMPLATE_DIR,
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
